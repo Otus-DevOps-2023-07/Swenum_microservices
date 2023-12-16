@@ -1,13 +1,14 @@
-FROM python:3.6-alpine
+
+FROM alpine:3.9
 
 WORKDIR /app
-COPY . /app
+COPY . ./
 
-RUN apk --no-cache --update add build-base && \
-    pip install --no-cache-dir -r /app/requirements.txt && \
-    apk del build-base
+RUN set -x \
+ && apk --no-cache --update add python3 py3-pip python3-dev build-base \
+ && pip3 install --no-cache-dir -r requirements.txt \
+ && apk del python3-dev build-base
 
-ENV POST_DATABASE_HOST=post_db \
-    POST_DATABASE=posts
+ENV POST_DATABASE_HOST=post_db POST_DATABASE=posts
 
 ENTRYPOINT ["python3", "post_app.py"]
